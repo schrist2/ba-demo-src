@@ -79,12 +79,24 @@ resource "aws_security_group" "allow_ssh" {
 resource "aws_instance" "web" {
   ami = var.aws_ec2_ami
   instance_type = var.aws_ec2_type
-  key_name = aws_key_pair.auth.id
-  subnet_id = aws_subnet.default.id
   associate_public_ip_address = true
+  
+  key_name = aws_key_pair.auth.id
+  
+  subnet_id = aws_subnet.default.id
+  
   vpc_security_group_ids = [
     aws_security_group.allow_all_outbound.id,
     aws_security_group.allow_web.id,
 	aws_security_group.allow_ssh.id
   ]
+  
+  provisioner "file" {
+    source = "provision/nginx.conf"
+	destination = "nginx.conf"
+  }
+  
+  provisioner "remote-exec" {
+    script = "provision/init.sh"
+  }
 }

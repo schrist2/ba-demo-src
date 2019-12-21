@@ -37,5 +37,3 @@ variable "aws_key_pair_name" {
   description = "Name of the AWS Key Pair to use."
   default = "ba-demo"
 }
-
-

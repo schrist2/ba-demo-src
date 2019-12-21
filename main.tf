@@ -30,10 +30,61 @@ resource "aws_key_pair" "auth" {
   public_key = file(var.public_key_file)
 }
 
+resource "aws_security_group" "allow_all_outbound" {
+  name = "allow_all_outbound"
+  description = "Allow all outgoing traffic."
+  vpc_id = aws_vpc.default.id
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_web" {
+  name = "allow_web"
+  description = "Allow HTTPS and HTTP traffic from and to everywhere."
+  vpc_id = aws_vpc.default.id
+
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_ssh" {
+  name = "allow_ssh"
+  description = "Allow SSH from and to everywhere."
+  vpc_id = aws_vpc.default.id
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_instance" "web" {
   ami = var.aws_ec2_ami
   instance_type = var.aws_ec2_type
   key_name = aws_key_pair.auth.id
   subnet_id = aws_subnet.default.id
   associate_public_ip_address = true
+  vpc_security_group_ids = [
+    aws_security_group.allow_all_outbound.id,
+    aws_security_group.allow_web.id,
+	aws_security_group.allow_ssh.id
+  ]
 }

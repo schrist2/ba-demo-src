@@ -92,11 +92,26 @@ resource "aws_instance" "web" {
   ]
   
   provisioner "file" {
-    source = "provision/nginx.conf"
-	destination = "nginx.conf"
+    source = "./provision"
+	destination = "~/provision"
+	
+	connection {
+      type = "ssh"
+	  host = self.public_ip
+      user = "ubuntu"
+      private_key = file(var.private_key_file)
+    }
   }
   
   provisioner "remote-exec" {
-    script = "provision/init.sh"
+    inline = ["/bin/bash ~/provision/init.sh"]
+	connection {
+      type = "ssh"
+	  host = self.public_ip
+      user = "ubuntu"
+      private_key = file(var.private_key_file)
+    }
   }
+
+  #user_data = "/bin/bash ~/provision/init.sh"
 }

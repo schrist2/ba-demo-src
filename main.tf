@@ -115,3 +115,8 @@ resource "aws_instance" "web" {
 
   #user_data = "/bin/bash ~/provision/init.sh"
 }
+
+resource "aws_s3_bucket" "static_content" {
+  bucket = "static_content"
+  acl = "public-read"
+}

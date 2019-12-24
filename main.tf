@@ -127,8 +127,7 @@ resource "aws_instance" "web" {
   #user_data = "/bin/bash ~/provision/init.sh"
 }
 
-resource "aws_s3_bucket" "bucket_1" {
-  bucket = "static-files"
+resource "aws_s3_bucket" "files" {
   acl = "public-read"
 }
 
@@ -138,14 +137,14 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_db_instance" "db" {
+  name = "db_mysql"
   allocated_storage = 20
   storage_type = "gp2"
   engine = "mysql"
   engine_version = "5.7"
   instance_class = "db.t2.micro"
-  name = "mysql"
   username = "root"
-  password = "12345"
+  password = "12345678"
   parameter_group_name = "default.mysql5.7"
   db_subnet_group_name = aws_db_subnet_group.default.name
 }

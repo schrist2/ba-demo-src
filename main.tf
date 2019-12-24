@@ -115,7 +115,14 @@ resource "aws_instance" "web" {
   }
   
   provisioner "remote-exec" {
-    inline = ["/bin/bash ~/provision/init.sh"]
+    inline = [
+		"echo S3_BUCKET=${aws_s3_bucket.files.bucket} | sudo tee --append /etc/environment > /dev/null",
+		"echo DB_HOST=${aws_db_instance.db.address} | sudo tee --append /etc/environment > /dev/null",
+		"echo DB_PORT=${aws_db_instance.db.port} | sudo tee --append /etc/environment > /dev/null",
+		"echo DB_USER=${aws_db_instance.db.username} | sudo tee --append /etc/environment > /dev/null",
+		"echo DB_PASS=${aws_db_instance.db.password} | sudo tee --append /etc/environment > /dev/null",
+		"/bin/bash ~/provision/init.sh"
+	]
 	connection {
       type = "ssh"
 	  host = self.public_ip
@@ -124,7 +131,7 @@ resource "aws_instance" "web" {
     }
   }
 
-  #user_data = "/bin/bash ~/provision/init.sh"
+  depends_on = [aws_db_instance.db]
 }
 
 resource "aws_s3_bucket" "files" {
@@ -137,7 +144,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_db_instance" "db" {
-  name = "db_mysql"
+  name = "app"
   allocated_storage = 20
   storage_type = "gp2"
   engine = "mysql"
@@ -147,4 +154,5 @@ resource "aws_db_instance" "db" {
   password = "12345678"
   parameter_group_name = "default.mysql5.7"
   db_subnet_group_name = aws_db_subnet_group.default.name
+  final_snapshot_identifier = "db-final"
 }

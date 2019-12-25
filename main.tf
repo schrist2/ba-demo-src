@@ -4,6 +4,10 @@ provider "aws" {
   secret_key = file(var.aws_secret_key_file)
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_vpc" "default" {
   cidr_block = "10.1.0.0/16"
   enable_dns_hostnames = true
@@ -11,10 +15,6 @@ resource "aws_vpc" "default" {
 
 resource "aws_internet_gateway" "default" {
   vpc_id = aws_vpc.default.id
-}
-
-data "aws_availability_zones" "available" {
-  state = "available"
 }
 
 resource "aws_subnet" "default" {
@@ -129,6 +129,8 @@ resource "aws_instance" "web" {
   
   provisioner "remote-exec" {
     inline = [
+		"echo AWS_ACCESS_KEY=${file(var.aws_access_key_file)} | sudo tee --append /etc/environment > /dev/null",
+		"echo AWS_SECRET_KEY=${file(var.aws_secret_key_file)} | sudo tee --append /etc/environment > /dev/null",
 		"echo S3_BUCKET=${aws_s3_bucket.files.bucket} | sudo tee --append /etc/environment > /dev/null",
 		"echo DB_HOST=${aws_db_instance.db.address} | sudo tee --append /etc/environment > /dev/null",
 		"echo DB_PORT=${aws_db_instance.db.port} | sudo tee --append /etc/environment > /dev/null",

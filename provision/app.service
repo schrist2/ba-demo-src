@@ -8,6 +8,7 @@ RestartSec=10
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=App
+EnvironmentFile=/etc/environment
 Environment=NODE_ENV=production PORT=3000
 
 [Install]

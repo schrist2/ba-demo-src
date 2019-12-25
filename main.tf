@@ -87,6 +87,19 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
+resource "aws_security_group" "allow_private_mysql" {
+  name = "allow_private_mysql"
+  description = "Allow MySQL connections from the local subnet."
+  vpc_id = aws_vpc.default.id
+
+  ingress {
+    from_port = 3306
+    to_port = 3306
+    protocol = "tcp"
+    cidr_blocks = [aws_vpc.default.cidr_block]
+  }
+}
+
 resource "aws_instance" "web" {
   ami = var.aws_ec2_ami
   instance_type = var.aws_ec2_type
@@ -155,4 +168,9 @@ resource "aws_db_instance" "db" {
   parameter_group_name = "default.mysql5.7"
   db_subnet_group_name = aws_db_subnet_group.default.name
   final_snapshot_identifier = "db-final"
+  
+  vpc_security_group_ids = [
+	aws_security_group.allow_all_outbound.id,
+	aws_security_group.allow_private_mysql.id
+  ]
 }

@@ -9,8 +9,7 @@ curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 # Install required packages.
 sudo apt -y install git nodejs nginx
 
-# Clone repository into code directory.
-sudo git clone https://github.com/schrist2/ba-demo-app.git /var/code
+# Switch to app source code directory.
 cd /var/code
 
 # Install all node modules specified in package.json.

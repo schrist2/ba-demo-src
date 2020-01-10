@@ -127,6 +127,18 @@ resource "aws_instance" "web" {
     }
   }
   
+  provisioner "file" {
+    source = "./app"
+	destination = "/var/code"
+	
+	connection {
+      type = "ssh"
+	  host = self.public_ip
+      user = "ubuntu"
+      private_key = file(var.private_key_file)
+    }
+  }
+  
   provisioner "remote-exec" {
     inline = [
 		"echo AWS_ACCESS_KEY=${file(var.aws_access_key_file)} | sudo tee --append /etc/environment > /dev/null",

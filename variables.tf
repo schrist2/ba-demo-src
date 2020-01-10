@@ -1,6 +1,6 @@
 variable "aws_region" {
   description = "Where to launch resources."
-  default = "us-east-1" # EU Frankfurt
+  default = "us-west-2"
 }
 
 variable "aws_access_key_file" {

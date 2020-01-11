@@ -1,6 +1,6 @@
 variable "aws_region" {
   description = "Where to launch resources."
-  default = "us-west-2"
+  default = "us-east-1"
 }
 
 variable "aws_access_key_file" {
@@ -25,7 +25,8 @@ variable "private_key_file" {
 
 variable "aws_ec2_ami" {
   description = "What AMI to use."
-  default = "ami-04b9e92b5572fa0d1" # Ubuntu 18.04 LTS
+  default = "ami-04b9e92b5572fa0d1" # Ubuntu 18.04 LTS, us-east-1
+  #default = "ami-02cbed67225579b2c" # Ubuntu 18.04 LTS, us-west-2
 }
 
 variable "aws_ec2_type" {

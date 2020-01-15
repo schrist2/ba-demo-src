@@ -129,7 +129,7 @@ resource "aws_instance" "web" {
   
   provisioner "file" {
     source = "./app"
-	destination = "/var/code"
+	destination = "~/code"
 	
 	connection {
       type = "ssh"

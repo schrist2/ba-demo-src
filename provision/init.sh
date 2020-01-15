@@ -9,6 +9,9 @@ curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 # Install required packages.
 sudo apt -y install git nodejs nginx
 
+# Copy source code into /var
+sudo cp -r ~/code /var/code
+
 # Switch to app source code directory.
 cd /var/code
 

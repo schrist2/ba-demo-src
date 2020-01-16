@@ -187,4 +187,6 @@ resource "aws_db_instance" "db" {
 	aws_security_group.allow_all_outbound.id,
 	aws_security_group.allow_private_mysql.id
   ]
+  
+  depends_on = [aws_db_subnet_group.default]
 }
